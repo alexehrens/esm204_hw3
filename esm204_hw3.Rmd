@@ -75,18 +75,52 @@ ggplot() +
   theme_bw()
 ```
 
+### 1. What is the aggregate daily demand curve for gasoline? What is the supply curve for gasoline? What is the “benefit” to consumers under the status quo? What is the “benefit” to producers under the status quo? What is the environmental cost under the status quo (locally and in the rest of the world)?
+
 Say we have two linear demand curves of the following form:
-For lower income consumers:
+
+- For lower income consumers:
 $P = b_L + a_L*Q_L$
 Then, $Q_L = \frac{P - b_L}{a_L}$
-For higher income consumers:
+
+- For higher income consumers:
 $P = b_H + a_H*Q_H$
 Then, $Q_H = \frac{P - b_H}{a_H}$
 
 Aggregate Daily Demand Curve = $Q_L + Q_H$
-If Q < $\frac{b_L - b_H}{a_H}$  then P =  $b_H - a_H*Q$
-If Q >= `r round(((b_L - b_H)/a_H),2)`  then P = $\frac{a_H * a_L}{a_h + a_L}*Q + \frac{a_H}{a_H + a_L}*b_L + \frac{a_L}{a_h + a_L}*b_H$
+
+- If Q < $\frac{b_L - b_H}{a_H}$  then P =  $b_H - a_H*Q$
+
+- If Q >= `r round(((b_L - b_H)/a_H),2)` then P = $\frac{a_H * a_L}{a_h + a_L}*Q + \frac{a_H}{a_H + a_L}*b_L + \frac{a_L}{a_h + a_L}*b_H$
+
 Supply Curve:
 $P = \frac{P_{eq}}{Q_{eq}}*Q_T$ where $P_{eq}$ is given and $Q_{eq}$ is found by calculating $Q_H + Q_L$ at $P_{eq}$. We know the intercept is 0, and the slope is just $\frac{rise}{run}$
 
-### 1. What is the aggregate daily demand curve for gasoline? What is the supply curve for gasoline? What is the “benefit” to consumers under the status quo? What is the “benefit” to producers under the status quo? What is the environmental cost under the status quo (locally and in the rest of the world)?
+```{r}
+# From the "following stylized facts," we know that P_eq = $3.00
+P_eq = 3
+Q_L = (P_eq - b_L)/a_L
+Q_H = (P_eq - b_H)/a_H
+Q_eq = Q_H + Q_L
+
+# Benefit to producers:
+integrand_producers <- function(x) {(P_eq/Q_eq)*x}
+integral_producers <- integrate(integrand_producers, 0, Q_eq)
+benefit_producers.1 <- (P_eq*Q_eq) - as.numeric(integral_producers$value)
+
+# Benefit to consumers (most easily found by doing each separately and then adding - THIS IS THE ANSWER TO QUESTION 2.):
+integrand_low <- function(x) {b_L + a_L*x}
+integral_low <- integrate(integrand_low, 0, Q_L)
+benefit_low <- as.numeric(integral_low$value) - P_eq*Q_L
+
+integrand_high <- function(x) {b_H + a_H*x}
+integral_high <- integrate(integrand_high, 0, Q_H)
+benefit_high <- as.numeric(integral_high$value) - P_eq*Q_H
+
+benefit_consumers_1 = benefit_low + benefit_high
+
+# Environmental costs: $1.50/gal locally, $0.50/gal globally
+env_cost_local_1 = Q_eq*1.5
+env_cost_global_1 = Q_eq*0.5
+```
+
