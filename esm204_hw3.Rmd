@@ -7,5 +7,86 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(tidyr)
+library(janitor)
+library(dplyr)
+
+hw3_data <- read.csv("hw_3_data.csv") %>% 
+  clean_names()
 ```
 
+```{r}
+mwtpl <- hw3_data$price_dollars
+mwtph <- hw3_data$price_dollars
+ql <- hw3_data$q_low_gallons
+qh <- hw3_data$q_high_gallons
+```
+
+```{r}
+# graph data
+ggplot(data = hw3_data) +
+  geom_point(aes(x = q_low_gallons,
+                 y = price_dollars)) +
+  theme_bw()
+
+ggplot(data = hw3_data) +
+  geom_point(aes(x = q_high_gallons,
+                 y = price_dollars)) +
+  theme_bw()
+```
+
+```{r}
+# make data frames for low and high income demand
+low_df <- tibble(MWTP_L = mwtpl, Q_L = ql)
+lm_low <- lm(MWTP_L ~ Q_L, data = low_df)
+summary(lm_low)
+
+low_coef <- as.numeric(lm_low$coefficients) # Spot 1 is the intercept, spot 2 is coef
+b_L <- low_coef[1]
+a_L <- low_coef[2] 
+
+high_df <- tibble(MWTP_H = mwtph, Q_H = qh)
+lm_high <- lm(MWTP_H ~ Q_H, data = high_df)
+summary(lm_high)
+
+high_coef <- as.numeric(lm_high$coefficients) # Spot 1 is the intercept, spot 2 is coef
+b_H <- high_coef[1]
+a_H <- high_coef[2]
+```
+
+```{r}
+# In this chunk I calculate the predicted willingness to pay for a given quantity for each consumer set and then graph them
+low_df <- low_df %>% 
+  mutate(
+    MWTP_predict = b_L + a_L*Q_L
+  )
+
+high_df <- high_df %>% 
+  mutate(
+    MWTP_predict = b_H + a_H*Q_H
+  )
+
+ggplot() +
+  geom_point(data = low_df, aes(x = Q_L, y = MWTP_L), color = 'red') + 
+  geom_line(data= low_df, aes(x = Q_L, y = MWTP_predict), color = 'red', lty = 2) + 
+  geom_point(data = high_df, aes(x = Q_H, y = MWTP_H), color = 'blue') + 
+  geom_line(data= high_df, aes(x = Q_H, y = MWTP_predict), color = 'blue', lty = 2) +
+  theme_bw()
+```
+
+Say we have two linear demand curves of the following form:
+For lower income consumers:
+$P = b_L + a_L*Q_L$
+Then, $Q_L = \frac{P - b_L}{a_L}$
+For higher income consumers:
+$P = b_H + a_H*Q_H$
+Then, $Q_H = \frac{P - b_H}{a_H}$
+
+Aggregate Daily Demand Curve = $Q_L + Q_H$
+If Q < $\frac{b_L - b_H}{a_H}$  then P =  $b_H - a_H*Q$
+If Q >= `r round(((b_L - b_H)/a_H),2)`  then P = $\frac{a_H * a_L}{a_h + a_L}*Q + \frac{a_H}{a_H + a_L}*b_L + \frac{a_L}{a_h + a_L}*b_H$
+Supply Curve:
+$P = \frac{P_{eq}}{Q_{eq}}*Q_T$ where $P_{eq}$ is given and $Q_{eq}$ is found by calculating $Q_H + Q_L$ at $P_{eq}$. We know the intercept is 0, and the slope is just $\frac{rise}{run}$
+
+### 1. What is the aggregate daily demand curve for gasoline? What is the supply curve for gasoline? What is the “benefit” to consumers under the status quo? What is the “benefit” to producers under the status quo? What is the environmental cost under the status quo (locally and in the rest of the world)?
