@@ -124,6 +124,7 @@ env_cost_local_1 = Q_eq*1.5
 env_cost_global_1 = Q_eq*0.5
 ```
 
+<<<<<<< HEAD
 
 ## Question 3.
 The equation for the supply curve has changed, and is now $P = \frac{P_{eq}}{Q_{eq}}*Q_T + 1$ We must now solve for the new $P_{eq}$ to be plugged in below as P_eq.2
@@ -154,5 +155,19 @@ tax_revenue = Q_eq.2*t
 
 ```{r}
 dknfglkj;lm;lm
+=======
+```{r}
+## random calculations to get aggregate MWTP equation
+q_int <- (b_L - b_H)/(a_H)
+
+agg_slope <- (a_L*a_H)/(a_L+a_H)
+agg_int <- ((a_L*b_H) + (b_L*a_H))/(a_L+a_H)
+
+# calc for supply curve equation
+supply_slope <- P_eq/Q_eq
+
+# finding total cost to consumers
+con.cost <- P_eq*Q_eq 
+>>>>>>> 1a0c774b5d4b3e10fc0aa544527eb3244ccf25ed
 ```
 
