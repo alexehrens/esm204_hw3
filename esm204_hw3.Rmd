@@ -152,3 +152,7 @@ env.cost.global.2 = Q_eq.2*0.5
 tax_revenue = Q_eq.2*t
 ```
 
+```{r}
+dknfglkj
+```
+
