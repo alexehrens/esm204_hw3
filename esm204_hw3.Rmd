@@ -124,3 +124,31 @@ env_cost_local_1 = Q_eq*1.5
 env_cost_global_1 = Q_eq*0.5
 ```
 
+
+## Question 3.
+The equation for the supply curve has changed, and is now $P = \frac{P_{eq}}{Q_{eq}}*Q_T + 1$ We must now solve for the new $P_{eq}$ to be plugged in below as P_eq.2
+```{r}
+#
+t = 1
+Q_eq.2 = (  (a_H/(a_H + a_L)*b_L) + (a_L/(a_H + a_L)*b_H) - t ) / ( (P_eq/Q_eq) -  (a_H*a_L)/(a_H + a_L)  )
+P_eq.2 = (P_eq/Q_eq)*Q_eq.2 + t
+Q_L.2 = (P_eq.2 - b_L)/a_L
+Q_H.2 = (P_eq.2 - b_H)/a_H
+# Benefit to producers:
+integrand.producers <- function(x) {(P_eq/Q_eq)*x + t}
+integral.producers <- integrate(integrand.producers, 0, Q_eq.2)
+benefit.producers.2 <- (P_eq.2*Q_eq.2) - as.numeric(integral.producers$value)
+# Benefit to consumers (most easily found by doing each separately and then adding - THIS IS THE ANSWER TO QUESTION 2.):
+integrand.low <- function(x) {b_L + a_L*x}
+integral.low <- integrate(integrand.low, 0, Q_L.2)
+benefit.low.2 <- as.numeric(integral.low$value) - P_eq.2*Q_L.2
+integrand.high <- function(x) {b_H + a_H*x}
+integral.high <- integrate(integrand.high, 0, Q_H.2)
+benefit.high.2 <- as.numeric(integral.high$value) - P_eq.2*Q_H.2
+benefit.consumers.2 = benefit.low.2 + benefit.high.2
+# Environmental costs: $1.50/gal locally, $0.50/gal globally
+env.cost.local.2 = Q_eq.2*1.5
+env.cost.global.2 = Q_eq.2*0.5
+tax_revenue = Q_eq.2*t
+```
+
