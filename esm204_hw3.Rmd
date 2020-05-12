@@ -124,7 +124,6 @@ env_cost_local_1 = Q_eq*1.5
 env_cost_global_1 = Q_eq*0.5
 ```
 
-<<<<<<< HEAD
 
 ## Question 3.
 The equation for the supply curve has changed, and is now $P = \frac{P_{eq}}{Q_{eq}}*Q_T + 1$ We must now solve for the new $P_{eq}$ to be plugged in below as P_eq.2
@@ -154,20 +153,23 @@ tax_revenue = Q_eq.2*t
 ```
 
 ```{r}
-dknfglkj;lm;lm
-=======
-```{r}
-## random calculations to get aggregate MWTP equation
-q_int <- (b_L - b_H)/(a_H)
+#Divide both demand equations by two
+Q_eq.5 = (  (a_H/(a_H + a_L)*(b_L*0.5)) + (a_L/(a_H + a_L)*(b_H*0.5)) ) / ( 
+  (P_eq/Q_eq) -  (a_H*a_L)/(a_H + a_L)  )
+P_eq.5 = (P_eq/Q_eq)*Q_eq.5 # Gas Price
+Q_L.5 = (P_eq.5 - b_L*0.5)/a_L # Low income consumption
+Q_H.5 = (P_eq.5 - b_H*0.5)/a_H # High income consumption
 
-agg_slope <- (a_L*a_H)/(a_L+a_H)
-agg_int <- ((a_L*b_H) + (b_L*a_H))/(a_L+a_H)
+# Compare these two numbers to those found in question 1.
+env.cost.local.5 = Q_eq.5*1.5
+env.cost.global.5 = Q_eq.5*0.5
 
-# calc for supply curve equation
-supply_slope <- P_eq/Q_eq
+```
 
-# finding total cost to consumers
-con.cost <- P_eq*Q_eq 
->>>>>>> 1a0c774b5d4b3e10fc0aa544527eb3244ccf25ed
+```{r} 
+t.6 = 7.1
+Q_eq.6 = (  (a_H/(a_H + a_L)*b_L) + (a_L/(a_H + a_L)*b_H) - t.6 ) / ( (P_eq/Q_eq) -  (a_H*a_L)/(a_H + a_L)  )
+env.cost.local.6 = Q_eq.6*1.5
+local.damage.diff = env.cost.local.6 - env.cost.local.5
 ```
 
